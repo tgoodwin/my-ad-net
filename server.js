@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const bodyParser=  require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
-
 var db;
+
 MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map', function(err, database) {
   // ... start the server
   if (err) return console.log(err);
@@ -43,11 +43,22 @@ app.put('/quotes', function(req, res) {
 	  });
 });
 
-app.post('/quotes', (req, res) => {
+app.post('/quotes', function(req, res) {
   console.log(req.body);
   db.collection('quotes').save(req.body, function(err, result) {
-  	if (err) return console.log(err);
+  	if (err)
+  		return console.log(err);
   	console.log('saved to database');
   	res.redirect('/');
+  });
+});
+
+app.delete('/quotes', function(req, res) {
+  // Handle delete event here
+  db.collection('quotes').findOneAndDelete({name: req.body.name}, 
+  function(err, result) {
+    if (err)
+    	return res.send(500, err);
+    res.send('A darth vadar quote got deleted');
   });
 });
