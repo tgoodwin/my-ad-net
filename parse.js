@@ -1,8 +1,9 @@
 //parse.js
 
-module.exports = function() {
-	this.parse = function(data) {
+module.exports = {
+	parse: function(data) {
 		var res = data.split(" ");
-		return res[5];
-	};
-}
+		if (res.length >= 6)
+			return res[5];
+	}
+};

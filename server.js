@@ -4,18 +4,20 @@ const bodyParser=  require('body-parser');
 const Tail = require('always-tail');
 const filename = '/home/pi/admap/outfile';
 const MongoClient = require('mongodb').MongoClient;
-var parse = require('./parse.js');
+const parser = require('./parse.js');
 
 // Tail the pi's DNS query logfile
 var t = new Tail(filename, '\n');
 t.on('line', function(data) {
 	console.log('data:', data);
-	console.log(parse.parse(data));
+	console.log(parser.parse(data));
 });
 t.on('error', function(error) {
 	console.log('error:', error);
 });
 t.watch();
+
+console.log(parser.parse("I am a big boy today!"));
 
 var db;
 MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map', function(err, database) {
@@ -23,7 +25,7 @@ MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-ma
   if (err) return console.log(err);
   db = database;
   app.listen(3000, function() {
-	console.log('Listening on port 3000');
+	console.log('Database connected. Listening on port 3000');
 	});
 });
 
