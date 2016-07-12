@@ -1,0 +1,12 @@
+#!/bin/bash
+# init shell script
+
+# maybe delete an old outfile here?
+# rm -f outfile
+
+# pipe grep into growing file
+tail -f /var/log/pihole.log | fgrep --line-buffered gravity.list >> outfile &
+
+# init node stuff
+
+# node server.js or something
