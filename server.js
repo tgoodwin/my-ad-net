@@ -4,13 +4,13 @@ const bodyParser=  require('body-parser');
 const Tail = require('always-tail');
 const filename = '/home/pi/admap/outfile';
 const MongoClient = require('mongodb').MongoClient;
-var parse = require('parser.js')();
+var parse = require('./parse.js');
 
 // Tail the pi's DNS query logfile
 var t = new Tail(filename, '\n');
 t.on('line', function(data) {
 	console.log('data:', data);
-	console.log(parse(data));
+	console.log(parse.parse(data));
 });
 t.on('error', function(error) {
 	console.log('error:', error);

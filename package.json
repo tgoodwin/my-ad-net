@@ -4,7 +4,10 @@
   "description": "ads for days",
   "main": "server.js",
   "dependencies": {
-    "always-tail": "^0.2.0"
+    "always-tail": "^0.2.0",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongodb": "^2.2.1"
   },
   "devDependencies": {},
   "scripts": {
