@@ -1,11 +1,23 @@
 const express = require('express');
 const app = express();
 const bodyParser=  require('body-parser');
+const Tail = require('always-tail');
+const filename = '/home/pi/admap/outfile';
 const MongoClient = require('mongodb').MongoClient;
-var parse = require('./parser.js');
+var parse = require('parser.js')();
+
+// Tail the pi's DNS query logfile
+var t = new Tail(filename, '\n');
+t.on('line', function(data) {
+	console.log('data:', data);
+	console.log(parse(data));
+});
+t.on('error', function(error) {
+	console.log('error:', error);
+});
+t.watch();
 
 var db;
-
 MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map', function(err, database) {
   // ... start the server
   if (err) return console.log(err);
