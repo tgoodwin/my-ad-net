@@ -1,3 +1,6 @@
+//server.js
+
+
 const express = require('express');
 const app = express();
 const bodyParser=  require('body-parser');
@@ -9,20 +12,21 @@ const parser = require('./parse.js');
 // Tail the pi's DNS query logfile
 var t = new Tail(filename, '\n');
 t.on('line', function(data) {
-	console.log('data:', data);
-	console.log(parser.parse(data));
+	// the following below works great. time to hit the dns API.
+	var ad_domain = parser.parse(data);
+	var res = parser.geolocate(ad_domain);
+	console.log(res);
+	console.log(JSON.parse(res));
 });
 t.on('error', function(error) {
-	console.log('error:', error);
+	console.log('sadness:', error);
 });
 t.watch();
-
-console.log(parser.parse("I am a big boy today!"));
 
 var db;
 MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map', function(err, database) {
   // ... start the server
-  if (err) return console.log(err);
+  if (err) return console.log('database error: ', err);
   db = database;
   app.listen(3000, function() {
 	console.log('Database connected. Listening on port 3000');
