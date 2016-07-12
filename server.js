@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const bodyParser=  require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
+var parse = require('./parser.js');
+
 var db;
 
 MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map', function(err, database) {

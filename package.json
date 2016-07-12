@@ -1,0 +1,29 @@
+{
+  "name": "ad-map",
+  "version": "1.0.0",
+  "description": "ads for days",
+  "main": "server.js",
+  "dependencies": {
+    "always-tail": "^0.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tgoodwin/admap.git"
+  },
+  "keywords": [
+    "ads",
+    "all",
+    "day"
+  ],
+  "author": "Tim Goodwin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tgoodwin/admap/issues"
+  },
+  "homepage": "https://github.com/tgoodwin/admap#readme"
+}
