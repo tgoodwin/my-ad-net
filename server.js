@@ -7,16 +7,19 @@ const bodyParser=  require('body-parser');
 const Tail = require('always-tail');
 const filename = '/home/pi/admap/outfile';
 const MongoClient = require('mongodb').MongoClient;
-const parser = require('./parse.js');
+var parser = require('./parse.js');
 
 // Tail the pi's DNS query logfile
 var t = new Tail(filename, '\n');
 t.on('line', function(data) {
 	// the following below works great. time to hit the dns API.
-	var ad_domain = parser.parse(data);
-	var res = parser.geolocate(ad_domain);
-	console.log(res);
-	console.log(JSON.parse(res));
+	var ad_domain = parser.getIP(data);
+	var res;
+	parser.getLocation(ad_domain, function(response) {
+		console.log('callback!', response); // outputs JSON string.
+		res = response;
+	});
+	
 });
 t.on('error', function(error) {
 	console.log('sadness:', error);
