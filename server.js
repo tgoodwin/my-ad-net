@@ -12,12 +12,16 @@ var parser = require('./parse.js');
 // Tail the pi's DNS query logfile
 var t = new Tail(filename, '\n');
 t.on('line', function(data) {
-	// the following below works great. time to hit the dns API.
 	var ad_domain = parser.getIP(data);
-	var res;
 	parser.getLocation(ad_domain, function(response) {
-		console.log('callback!', response); // outputs JSON string.
-		res = response;
+            // callback to parser.getLocation
+
+                try {
+                    var res = JSON.parse(response);
+                    console.log(res['latitude'], res['longitude']);
+                } catch(err) {
+                    console.log('fucking christ', err);
+                }
 	});
 	
 });
@@ -28,7 +32,6 @@ t.watch();
 
 var db;
 MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map', function(err, database) {
-  // ... start the server
   if (err) return console.log('database error: ', err);
   db = database;
   app.listen(3000, function() {
@@ -46,6 +49,11 @@ app.get('/', function(req, res) {
 		if (err) return console.log(err);
 		res.render('index.ejs', {quotes: result});
 	});
+});
+
+app.get('/radar', function(req, res) {
+
+
 });
 
 app.put('/quotes', function(req, res) {
