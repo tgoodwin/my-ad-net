@@ -11,31 +11,16 @@ var parser = require('./parse.js');
 
 // Tail the pi's DNS query logfile
 var t = new Tail(filename, '\n');
-t.on('line', function(data) {
-	var ad_domain = parser.getIP(data);
-	parser.getLocation(ad_domain, function(response) {
-            // callback to parser.getLocation
-
-                try {
-                    var res = JSON.parse(response);
-                    console.log(res['latitude'], res['longitude']);
-                } catch(err) {
-                    console.log('fucking christ', err);
-                }
-	});
-	
-});
-t.on('error', function(error) {
-	console.log('sadness:', error);
-});
-t.watch();
 
 var db;
-MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map', function(err, database) {
-  if (err) return console.log('database error: ', err);
-  db = database;
-  app.listen(3000, function() {
-	console.log('Database connected. Listening on port 3000');
+var mongoURI = 'mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map';
+MongoClient.connect(mongoURI, function(err, database) {
+	if (err) {
+		return console.log('database error: ', err);
+	}
+	db = database;
+	app.listen(3000, function() {
+		console.log('Database connected. Listening on port 3000');
 	});
 });
 
@@ -52,8 +37,22 @@ app.get('/', function(req, res) {
 });
 
 app.get('/radar', function(req, res) {
-
-
+	t.on('line', function(data) {
+		parser.getLocation(data, function(location) {
+	    // callback to parser.getLocation
+	        try {
+	            var loc = JSON.parse(location);
+	            console.log(loc['latitude'], loc['longitude']);
+	            res.send(location);
+	        } catch(err) {
+	            console.log('fucking christ', err);
+	        }
+		});
+	});
+	t.on('error', function(error) {
+		console.log('sadness:', error);
+	});
+	t.watch();
 });
 
 app.put('/quotes', function(req, res) {
@@ -75,13 +74,13 @@ app.put('/quotes', function(req, res) {
 });
 
 app.post('/quotes', function(req, res) {
-  console.log(req.body);
-  db.collection('quotes').save(req.body, function(err, result) {
-  	if (err)
-  		return console.log(err);
-  	console.log('saved to database');
-  	res.redirect('/');
-  });
+	console.log(req.body);
+	db.collection('quotes').save(req.body, function(err, result) {
+		if (err)
+			return console.log(err);
+		console.log('saved to database');
+		res.redirect('/');
+	});
 });
 
 app.delete('/quotes', function(req, res) {
