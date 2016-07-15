@@ -25,11 +25,11 @@
   <ul class="quotes">
   <% for(var i=0; i<locations.length; i++) {%>
     <li class="quote">
-      <span><%= locations[i].ip %></span>
-      <span><%= locations[i].city %></span>
-      <span><%= locations[i].region_name %></span>
-      <span><%= locations[i].latitude %></span>
-      <span><%= locations[i].longitude %></span>
+      <span>ip: <%= locations[i].ip %> '\t'</span>
+      <span><%= locations[i].city %>, </span>
+      <span><%= locations[i].region_name %> '\t'</span>
+      <span>[ <%= locations[i].latitude %>, </span>
+      <span><%= locations[i].longitude %> ]</span>
     </li>
   <% } %>
   </ul>
