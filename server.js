@@ -1,6 +1,5 @@
 //server.js
 
-
 const express = require('express');
 const app = express();
 const bodyParser=  require('body-parser');
@@ -8,27 +7,6 @@ const Tail = require('always-tail');
 const filename = '/home/pi/admap/outfile';
 const MongoClient = require('mongodb').MongoClient;
 var parser = require('./parse.js');
-
-// Tail the pi's DNS query logfile
-var t = new Tail(filename, '\n');
-t.on('line', function(data) {
-	var ad_domain = parser.getIP(data);
-	parser.getLocation(ad_domain, function(response) {
-            // callback to parser.getLocation
-
-                try {
-                    var res = JSON.parse(response);
-                    console.log(res['latitude'], res['longitude']);
-                } catch(err) {
-                    console.log('fucking christ', err);
-                }
-	});
-	
-});
-t.on('error', function(error) {
-	console.log('sadness:', error);
-});
-t.watch();
 
 var db;
 MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map', function(err, database) {
@@ -38,6 +16,30 @@ MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-ma
 	console.log('Database connected. Listening on port 3000');
 	});
 });
+
+// Tail the pi's DNS query logfile
+var t = new Tail(filename, '\n');
+t.on('line', function(data) {
+	var ad_domain = parser.getIP(data);
+	parser.getLocation(ad_domain, function(response) {
+            try {
+                var res = JSON.parse(response);
+                // console.log(res['latitude'], res['longitude']);
+                db.collection('radar').save(req, function(err, result) {
+                	if(err)
+                		return console.log('geolocate->database error: ', err);
+                	console.log('sent' + res['ip'] + 'to database');
+                });
+            // JSON parse error.
+            } catch(err) {
+                console.log('parse.. fucking christ, ', err);
+            }
+	});
+});
+t.on('error', function(error) {
+	console.log('sadness:', error);
+});
+t.watch();
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -49,11 +51,6 @@ app.get('/', function(req, res) {
 		if (err) return console.log(err);
 		res.render('index.ejs', {quotes: result});
 	});
-});
-
-app.get('/radar', function(req, res) {
-
-
 });
 
 app.put('/quotes', function(req, res) {
