@@ -24,11 +24,11 @@ t.on('line', function(data) {
 	parser.getLocation(ad_domain, function(response) {
             try {
                 var res = JSON.parse(response);
-                // console.log(res['latitude'], res['longitude']);
-                db.collection('radar').save(req, function(err, result) {
+                res['domain'] = ad_domain;
+                db.collection('radar').save(res, function(err, result) {
                 	if(err)
                 		return console.log('geolocate->database error: ', err);
-                	console.log('sent' + res['ip'] + 'to database');
+                	console.log('sent ' + res['ip'] + ' to database.');
                 });
             // JSON parse error.
             } catch(err) {
@@ -37,7 +37,7 @@ t.on('line', function(data) {
 	});
 });
 t.on('error', function(error) {
-	console.log('sadness:', error);
+	console.log('sadness: ', error);
 });
 t.watch();
 
@@ -47,9 +47,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/', function(req, res) {
-	var cursor = db.collection('quotes').find().toArray(function(err, result) {
+	var cursor = db.collection('radar').find().toArray(function(err, result) {
 		if (err) return console.log(err);
-		res.render('index.ejs', {quotes: result});
+		res.render('index.ejs', {locations: result});
 	});
 });
 
