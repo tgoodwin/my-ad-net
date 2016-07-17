@@ -26,8 +26,11 @@ var Todo = mongoose.model('Todo', {
 
 var AdLoc = require('./app/models/adloc'); // load the AdLoc model.
 
+// ------- LISTEN -------
 app.listen(port);
 console.log('listening on port' + port);
+
+// ---------- ROUTES -----------
 
 app.get('/api/todo', function(req, res) {
 	Todo.find(function (err, result) {
