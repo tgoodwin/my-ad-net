@@ -1,4 +1,5 @@
 //parse.js
+
 var request = require('request');
 
 var parse = function(data) {
@@ -8,7 +9,7 @@ var parse = function(data) {
 	}
 };
 
-var geolocate = function(address, callback) {
+var getServerLocation = function(address, callback) {
 	var msg = 'http://freegeoip.net/json/' + address;
 	console.log('api request: ', msg);
 	request(msg, function(error, response, body) {
@@ -26,8 +27,8 @@ module.exports = {
 		return parse(data);
 	},
 
-	getLocation: function(d, callback) {
-		return geolocate(d, callback);
+	geolocate: function(d, callback) {
+		return getServerLocation(d, callback);
 	}
 };
 

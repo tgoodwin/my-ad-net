@@ -1,92 +1,77 @@
 //server.js
 
-const express = require('express');
-const app = express();
-const bodyParser=  require('body-parser');
-const Tail = require('always-tail');
-const filename = '/home/pi/admap/outfile';
-const MongoClient = require('mongodb').MongoClient;
-var parser = require('./parse.js');
+// set up ========================
+var express = require('express');
+var app = express();
+var mongoose = require('mongoose');
+var morgan = require('morgan');				// log requests to the console for now
+var bodyParser = require('body-parser');	// pull information from HTML POST
+var methodOverride = require('method-override'); // simulate DELETE and PUT
+var utils = require('.app/utils');			// raspberry pi OS helper code
+var port = process.env.PORT || 8080;
 
-var db;
-MongoClient.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map', function(err, database) {
-  if (err) return console.log('database error: ', err);
-  db = database;
-  app.listen(3000, function() {
-	console.log('Database connected. Listening on port 3000');
-	});
-});
+mongoose.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map');
 
-// Tail the pi's DNS query logfile
-var t = new Tail(filename, '\n');
-t.on('line', function(data) {
-	var ad_domain = parser.getIP(data);
-	parser.getLocation(ad_domain, function(response) {
-            try {
-                var res = JSON.parse(response);
-                res['domain'] = ad_domain;
-                db.collection('radar').save(res, function(err, result) {
-                	if(err)
-                		return console.log('geolocate->database error: ', err);
-                	console.log('sent ' + res['ip'] + ' to database.');
-                });
-            // JSON parse error.
-            } catch(err) {
-                console.log('parse.. fucking christ, ', err);
-            }
-	});
-});
-t.on('error', function(error) {
-	console.log('sadness: ', error);
-});
-t.watch();
-
-app.set('view engine', 'ejs');
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+app.use(methodOverride());
 
-app.get('/', function(req, res) {
-	var cursor = db.collection('radar').find().toArray(function(err, result) {
-		if (err) return console.log(err);
-		res.render('index.ejs', {locations: result});
+// example Todo model
+var Todo = mongoose.model('Todo', {
+	text: String
+});
+
+var AdLoc = require('./app/models/adloc'); // load the AdLoc model.
+
+app.listen(port);
+console.log('listening on port' + port);
+
+app.get('/api/todo', function(req, res) {
+	Todo.find(function (err, result) {
+		if (err)
+			res.send(err);
+		res.json(result); // return all results in json format.
 	});
 });
 
-app.put('/quotes', function(req, res) {
-	//handle put request
-	db.collection('quotes')
-	  .findOneAndUpdate({name: 'Yoda'}, {
-	    $set: {
-	      name: req.body.name,
-	      quote: req.body.quote
-	    }
-	  }, {
-	    sort: {_id: -1},
-	    upsert: true
-	  }, function(err, result) {
-	    if (err)
-	    	return res.send(err);
-	    res.send(result);
-	  });
+app.post('/api/todos', function(req, res) {
+
+    // create a todo, information comes from AJAX request from Angular
+    Todo.create({
+        text : req.body.text,
+        done : false
+    }, function(err, todo) {
+        if (err)
+            res.send(err);
+
+        // get and return all the todos after you create another
+        Todo.find(function(err, todos) {
+            if (err)
+                res.send(err)
+            res.json(todos);
+        });
+    });
+
 });
 
-app.post('/quotes', function(req, res) {
-  console.log(req.body);
-  db.collection('quotes').save(req.body, function(err, result) {
-  	if (err)
-  		return console.log(err);
-  	console.log('saved to database');
-  	res.redirect('/');
-  });
+// delete a todo
+app.delete('/api/todos/:todo_id', function(req, res) {
+	Todo.remove({
+		_id : req.params.todo_id
+	}, function(err, todo) {
+		if (err)
+			res.send(err);
+
+		// get and return all the todos after you create another
+		Todo.find(function(err, todos) {
+			if (err)
+				res.send(err)
+			res.json(todos);
+		});
+	});
 });
 
-app.delete('/quotes', function(req, res) {
-  // Handle delete event here
-  db.collection('quotes').findOneAndDelete({name: req.body.name}, 
-  function(err, result) {
-    if (err)
-    	return res.send(500, err);
-    res.send('A darth vadar quote got deleted');
-  });
-});
+
