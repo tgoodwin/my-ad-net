@@ -4,11 +4,11 @@ function mainController($scope, $http) {
 
 	$scope.formData = {}; //wont need, probably
 
-	$http.get('/api/todos') // change to api/geo
+	$http.get('/api/geo') // change to api/geo
 		.success(function(data) {
 			//bind JSON from API to $scope.todos
-			$scope.todos = data;
-			console.log(todos);
+			$scope.locations = data;
+			console.log(data);
 			//call mapbuilder on data
 		})
 		.error(function(data) {

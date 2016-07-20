@@ -27,12 +27,13 @@ var initCallbacks = function(model) { // pass in AdLoc mongoose object?
     	util.geolocate(ad_domain, function(response) {
             try {
                 var res = JSON.parse(response);
+                console.log('parsed somethin good');
 
                 AdLoc.create({
                     domain : ad_domain,
                     ip : res['ip'],
                     city : res['city'],
-                    country : res['country'],
+                    country : res['country_name'],
                     latf : res['latitude'],
                     lonf : res['longitude']
                 }, function(err, adloc) {

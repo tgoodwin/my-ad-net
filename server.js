@@ -37,13 +37,21 @@ var port = process.env.PORT || 8080;
 app.listen(port);
 console.log('listening on port' + port); // - - - - - - - - - - - LISTENING - - - - - - - - - - - -
 
-// ---------- ROUTES -----------
+// ---------- ROUTES ----------- // TODO: expose these in a routes.js module
 
 app.get('/api/todo', function(req, res) {
 	Todo.find(function (err, result) {
 		if (err)
 			res.send(err);
 		res.json(result); // return all results in json format.
+	});
+});
+
+app.get('/api/geo', function(req, res) {
+	AdLoc.find(function (err, result) {
+		if (err)
+			res.send(err);
+		res.json(result);
 	});
 });
 
@@ -63,7 +71,6 @@ app.post('/api/todos', function(req, res) {
             res.json(todos);
         });
     });
-
 });
 
 // delete a todo
@@ -81,6 +88,12 @@ app.delete('/api/todos/:todo_id', function(req, res) {
 			res.json(todos);
 		});
 	});
+});
+
+// application ---------------------------------------------------
+app.get('*', function(req, res) {
+	// load the single view file. Angular handles changes on front-end.
+	res.sendFile(__dirname + '/public/index.html');
 });
 
 
