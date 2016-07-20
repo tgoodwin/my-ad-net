@@ -1,15 +1,16 @@
 //server.js
 
-// set up ========================
-var express = require('express');
-var app = express();
-var mongoose = require('mongoose');
-var morgan = require('morgan');				// log requests to the console for now
-var bodyParser = require('body-parser');	// pull information from HTML POST
-var methodOverride = require('method-override'); // simulate DELETE and PUT
-var utils = require('.app/utils');			// raspberry pi OS helper code
-var port = process.env.PORT || 8080;
+// set up ==============================
+var express		=	require('express');
+var app 		=	express();
+var mongoose 	= 	require('mongoose'); 		// mehhhh
+var morgan 		= 	require('morgan');			// log requests to the console for now
+var bodyParser 	= 	require('body-parser');		// pull information from HTML POST
+var override 	=	require('method-override'); // simulate DELETE and PUT
+var utils 		= 	require('./app/utils');		// raspberry pi OS helper code
 
+var db = mongoose.connection;
+db.on('error', console.error);
 mongoose.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map');
 
 app.use(express.static(__dirname + '/public'));
@@ -17,18 +18,24 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
-app.use(methodOverride());
+app.use(override());
 
 // example Todo model
 var Todo = mongoose.model('Todo', {
 	text: String
 });
 
-var AdLoc = require('./app/models/adloc'); // load the AdLoc model.
+// load the 'AdLoc' model constructor
+var AdLoc = require('./app/models/adloc');
+// 
+var tailer = require('./app/tail');
+tailer.bind(AdLoc); // pass in our database-connected constructor.
+tailer.watch();
 
-// ------- LISTEN -------
+// ---------- LISTEN ----------
+var port = process.env.PORT || 8080;
 app.listen(port);
-console.log('listening on port' + port);
+console.log('listening on port' + port); // - - - - - - - - - - - LISTENING - - - - - - - - - - - -
 
 // ---------- ROUTES -----------
 
@@ -41,7 +48,6 @@ app.get('/api/todo', function(req, res) {
 });
 
 app.post('/api/todos', function(req, res) {
-
     // create a todo, information comes from AJAX request from Angular
     Todo.create({
         text : req.body.text,

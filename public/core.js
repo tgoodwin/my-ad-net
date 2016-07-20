@@ -2,13 +2,13 @@ var adRadar = angular.module('adRadar', []);
 
 function mainController($scope, $http) {
 
-	$scope.formData = {}; //wont need
+	$scope.formData = {}; //wont need, probably
 
 	$http.get('/api/todos') // change to api/geo
 		.success(function(data) {
-			//bind JSON from API to $scope.locations
+			//bind JSON from API to $scope.todos
 			$scope.todos = data;
-			console.log(locations);
+			console.log(todos);
 			//call mapbuilder on data
 		})
 		.error(function(data) {
