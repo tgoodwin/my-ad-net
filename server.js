@@ -9,6 +9,8 @@ var bodyParser 	= 	require('body-parser');		// pull information from HTML POST
 var override 	=	require('method-override'); // simulate DELETE and PUT
 var utils 		= 	require('./app/utils');		// raspberry pi OS helper code
 
+// var mapjson		=	require('./public/us.json');
+
 var db = mongoose.connection;
 db.on('error', console.error);
 mongoose.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map');
@@ -32,10 +34,9 @@ var tailer = require('./app/tail');
 tailer.bind(AdLoc); // pass in our database-connected constructor.
 tailer.watch();
 
-// ---------- LISTEN ----------
 var port = process.env.PORT || 8080;
 app.listen(port);
-console.log('listening on port' + port); // - - - - - - - - - - - LISTENING - - - - - - - - - - - -
+console.log('listening on port' + port);
 
 // ---------- ROUTES ----------- // TODO: expose these in a routes.js module
 
@@ -53,6 +54,11 @@ app.get('/api/geo', function(req, res) {
 			res.send(err);
 		res.json(result);
 	});
+});
+
+app.get('/us.json', function(req, res) {
+	res.setHeader('Content-Type', 'application/json');
+	res.json(mapjson);
 });
 
 app.post('/api/todos', function(req, res) {
