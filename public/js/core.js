@@ -13,24 +13,33 @@ app.directive('supermap', ['topo', function(topo) {
 			coords: '=todos'
 		},
 		link: function(scope, element, attr) {
-			var width = 960;
-			var height = 500;
-			var projection = d3.geo.albers()
-				.scale(1000)
-				.translate([width / 2, height / 2]);
+			var width = angular.element(window)[0].innerWidth;
+			var height = angular.element(window)[0].innerHeight;
 
-			var path = d3.geo.path().projection(projection);
+			var projection = d3.geo.albersUsa();
+			var path = d3.geo.path();
+
+			var updateProjection = function() {
+				projection.scale(width)
+					.translate([width / 2, height / 2]);
+				path.projection(projection);
+			};
+			updateProjection();
+			
 			var svg = d3.select(element[0])
-				.append('svg')
-				.attr('width', width)
-				.attr('height', height);
+				.append('svg');
 
 			// re-render d3 canvas on resize
 			window.onresize = function() {
+				width = angular.element(window)[0].innerWidth;
+				height = angular.element(window)[0].innerHeight;
+				updateProjection();
+				if (scope.coords)
+					scope.render(scope.coords);
 				return scope.$apply;
 			};
+
 			scope.$watch(function() {
-				return angular.element(window)[0].innerWidth;
 			}, function() {
 				return scope.render(scope.coords);
 			});
@@ -42,6 +51,9 @@ app.directive('supermap', ['topo', function(topo) {
 
 			// d3 map drawing code here. -------
 			scope.render = function(data) {
+				svg
+					.attr('width', width)
+					.attr('height', height);
 
 				svg.selectAll('*').remove();
 				svg.insert('path', '.graticule')
@@ -55,17 +67,22 @@ app.directive('supermap', ['topo', function(topo) {
 					.attr('stroke', "#fff")
 					.attr('d', path);
 
+				var project = function(d) {
+					return projection([+d.lonf, +d.latf]);
+				};
+
 				svg.selectAll('circle')
 					.data(data)
 					.enter()
 					.append('circle')
-					.attr('cx', function (d) { return projection([+d.lonf, +d.latf])[0]; })
-					.attr('cy', function (d) { return projection([+d.lonf, +d.latf])[1]; })
+					.attr('cx', function (d) { return project(d) ? project(d)[0] : 0; })
+					.attr('cy', function (d) { return project(d) ? project(d)[1] : 0; })
 					.attr('city', function(d) { return d.city; })
-					.attr('r', 4)
+					.attr('r', function(d) { return project(d) ? 4 : 0})
 					.attr('stroke', 'red')
 					.attr('stroke-width', 1);
 			};
-		}
+		},
+		template: '<div></div>'
 	}
 }]);
