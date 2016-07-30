@@ -13,15 +13,17 @@ app.directive('supermap', ['topo', function(topo) {
 			coords: '=todos'
 		},
 		link: function(scope, element, attr) {
-			var width = 900;
+			var width = 960;
 			var height = 500;
-			var projection = d3.geo.albersUsa();
-			var path = d3.geo.path().projection(projection);
+			var projection = d3.geo.albers()
+				.scale(1000)
+				.translate([width / 2, height / 2]);
 
+			var path = d3.geo.path().projection(projection);
 			var svg = d3.select(element[0])
 				.append('svg')
-				.attr('width', '100%')
-				.attr('height', 500);
+				.attr('width', width)
+				.attr('height', height);
 
 			// re-render d3 canvas on resize
 			window.onresize = function() {
@@ -46,6 +48,7 @@ app.directive('supermap', ['topo', function(topo) {
 					.datum(topojson.feature(topo, topo.objects.land))
 					.attr('d', path);
 
+				// state borders
 				svg.insert('path', '.graticule')
 					.datum(topojson.mesh(topo, topo.objects.states, function(a, b) { return a !== b }))
 					.attr('class', 'state-boundary')
@@ -56,14 +59,13 @@ app.directive('supermap', ['topo', function(topo) {
 					.data(data)
 					.enter()
 					.append('circle')
-					.attr('cx', function (d) { return projection(parseInt(d.latf)); })
-					.attr('cy', function (d) { return projection(parseInt(d.lonf)); })
-					.attr('ip-address', function(d) { return d.ip; })
-					.attr('r', 8)
-					.attr('fill', 'red');
-				// });
+					.attr('cx', function (d) { return projection([+d.lonf, +d.latf])[0]; })
+					.attr('cy', function (d) { return projection([+d.lonf, +d.latf])[1]; })
+					.attr('city', function(d) { return d.city; })
+					.attr('r', 4)
+					.attr('stroke', 'red')
+					.attr('stroke-width', 1);
 			};
-		},
-		template: '<div class="chart">Here I am to save the day</div>'
+		}
 	}
 }]);

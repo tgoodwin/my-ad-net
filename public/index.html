@@ -9,26 +9,15 @@
 
 	<title>my ad-network</title>
 
-	<!-- SCROLLS -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-	<style>
-		html 					{ overflow-y:scroll; }
-		body 					{ padding-top:50px; }
-		#todo-list 				{ margin-bottom:30px; }
-		#todo-form 	 			{ margin-bottom:50px; }
-	</style>
-
 	<!-- SPELLS -->
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="//d3js.org/topojson.v1.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
 
-	<script src="js/controllers/main.js"></script> <!-- load up our controller -->
-	<script src="js/services/todos.js"></script> <!-- load our todo service -->
+	<script src="js/controllers/main.js"></script>
+	<script src="js/services/todos.js"></script>
     <script src="js/services/d3.js"></script>
-	<script src="js/core.js"></script> <!-- load our main application -->
-
+	<script src="js/core.js"></script>
 </head>
 
 <!-- SET THE CONTROLLER -->
@@ -37,17 +26,13 @@
     <supermap map-data="topojson" todos="todos"></supermap>
 
 		<!-- HEADER AND TODO COUNT -->
-		<div class="jumbotron text-center">
-			<h1>I'm a Todo-aholic <span class="label label-info">{{ todos.length }}</span></h1>
-		</div>
+		<!-- <div>
+			<span class="label label-info">{{ todos.length }}</span>
+		</div> -->
 
 		<!-- TODO LIST -->
-		<div id="todo-list" class="row">
+		<!-- <div id="todo-list" class="row">
 			<div class="col-sm-4 col-sm-offset-4">
-
-				
-
-				<!-- LOOP OVER THE TODOS IN $scope.todos -->
 				<div class="checkbox" ng-repeat="todo in todos">
 					<label>
 						<input type="checkbox" ng-click="deleteTodo(todo._id)"> {{ todo.ip }} {{ todo.city }} {{todo.latf}} {{todo.lonf}}
@@ -59,28 +44,22 @@
 				</p>
 
 			</div>
-		</div>
+		</div> -->
 
 		<!-- FORM TO CREATE TODOS -->
-		<div id="todo-form" class="row">
+		<!-- <div id="todo-form" class="row">
 			<div class="col-sm-8 col-sm-offset-2 text-center">
 				<form>
 					<div class="form-group">
 
-						<!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
 						<input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.text">
 					</div>
 
-					<!-- createToDo() WILL CREATE NEW TODOS -->
 					<button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>
 				</form>
 			</div>
-		</div>
+		</div> -->
 
-		<div class="text-center text-muted">
-			<p>by <a href="http://timgoodwin.me">timgoodwin</a>.</p>
-			
-		</div>
 
 	</div>
 
