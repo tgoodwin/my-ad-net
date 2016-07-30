@@ -1,0 +1,16 @@
+<!DOCTYPE Html>
+<html> 
+<body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+    
+    socket.emit('visitor-data', visitorData);
+    socket.on('ad-event', function(data) {
+        console.log(data);
+    });
+</script>
+
+</body>
+</html>

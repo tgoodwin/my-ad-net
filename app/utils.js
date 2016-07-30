@@ -2,7 +2,7 @@
 
 var request = require('request');
 
-var parse = function(data) {
+var getIP = function(data) {
 	var res = data.split(" ");
 	if (res.length >= 6) {
 		return res[5]; //the domain name
@@ -16,17 +16,13 @@ var getServerLocation = function(address, callback) {
 		if (!error && response.statusCode == 200){
 			return callback(body);
 		} else {
-			console.log('error', error);
+			console.log('error: ', error);
 			return callback(error);
 		}
 	});
 };
 
 module.exports = {
-	getIP: function(data) {
-		return parse(data);
-	},
-
 	geolocate: function(d, callback) {
 		return getServerLocation(d, callback);
 	}
