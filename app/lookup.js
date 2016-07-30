@@ -1,31 +1,35 @@
-//parse.js
+//lookup.js
+
 var request = require('request');
 
-var getIP = function(data) {
+var parse = function(data) {
 	var res = data.split(" ");
 	if (res.length >= 6) {
-		return res[5]; //the domain name
+		return res[5]; //the domain name as string
 	}
 };
 
-var getLocationInfo = function(address, callback) {
+var getServerLocation = function(address, callback) {
+	// could modularize this for various geolocation options
 	var msg = 'http://freegeoip.net/json/' + address;
 	console.log('api request: ', msg);
 	request(msg, function(error, response, body) {
 		if (!error && response.statusCode == 200){
 			return callback(body);
 		} else {
-			console.log('error: ', error);
+			console.log('error', error);
 			return callback(error);
 		}
 	});
 };
 
 module.exports = {
+	getIP: function(data) {
+		return parse(data);
+	},
 
-	geolocate: function(data, callback) {
-		var ad_domain = getIP(data);
-		return getLocationInfo(ad_domain, callback);
+	geolocate: function(d, callback) {
+		return getServerLocation(d, callback);
 	}
 };
 
