@@ -3,23 +3,24 @@ var app = angular.module('scotchTodo', [
 	'radarService'
 	]);
 
-app.directive('supermap', ['topo', function(topo) {
+app.directive('superMap', ['topo', function(topo) {
 	return {
 		restrict: 'E',
 		replace: false,
 		scope: {
 			id: '@',
-			topo: '=mapData',
-			coords: '=todos'
+			coords: '=todos',
+			hovered: '&hovered'
 		},
+
 		link: function(scope, element, attr) {
 			var inner_width = angular.element(window)[0].innerWidth;
 			var map_width = inner_width * 0.8;
 			var inner_height = angular.element(window)[0].innerHeight;
 			var map_height = inner_height - 20; // calibrated for default padding
 
-			var projection = d3.geo.albersUsa();
-			var path = d3.geo.path();
+			var projection = d3.geoAlbersUsa();
+			var path = d3.geoPath();
 
 			var updateProjection = function() {
 				projection.scale(map_width * 1.25)
@@ -52,8 +53,8 @@ app.directive('supermap', ['topo', function(topo) {
 					return scope.render(newVal);
 			}, true);
 
-			// d3 map drawing code here. -------
 			scope.render = function(data) {
+				// var voronoi = d3.voronoi();
 				svg
 					.attr('width', map_width)
 					.attr('height', map_height);
@@ -78,14 +79,42 @@ app.directive('supermap', ['topo', function(topo) {
 					.data(data)
 					.enter()
 					.append('circle')
+					.classed('ad-point', true)
 					.attr('cx', function (d) { return project(d) ? project(d)[0] : 0; })
 					.attr('cy', function (d) { return project(d) ? project(d)[1] : 0; })
 					.attr('city', function(d) { return d.city; })
-					.attr('r', function(d) { return project(d) ? 4 : 0})
-					.attr('stroke', 'red')
-					.attr('stroke-width', 1);
+					.attr('r', function(d) { return project(d) ? 4 : 0});
+
+				d3.selectAll('.ad-point').on('mouseover', function(d) {
+					console.log(d.ip);
+					scope.hovered({ args:d });
+					return d3.select(this).attr('fill', 'red');
+				}).on('mouseout', function(d) {
+					scope.hovered({ args: {} });
+					return d3.select(this).attr('fill', 'none');
+				});
 			};
-		},
-		template: '<div class="panel"> ads located: {{ coords.length }}</div>'
+		}
 	}
 }]);
+
+app.directive('serverInfo', function() {
+	return {
+		restrict: 'E',
+		replace: true,
+		scope: {
+			selection: '@selection'
+		},
+		link: function(scope, element, attr) {
+			// scope.watch('selection', function() {})
+			return true;
+		},
+		template: '<div>' +
+			'</br >domain: {{ selection.domain }}' + 
+			'</br >ip: {{ selection.ip }}' +
+			'</br >{{ selection.city }}' +
+			'</br >region: {{ selection.country }}' +
+			'</br >@ {{ selection.latf}} , {{ selection.lonf }}' +
+			'</div>'
+	}
+});

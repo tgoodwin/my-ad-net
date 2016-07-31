@@ -1,16 +1,19 @@
 body {
-	
+
 }
 
 .map-container {
-	border-left: 1px solid black;
+	position: absolute;
 	margin-left: 20%;
 }
-
+.panel-container {
+	width: auto;
+	font-family: courier;
+	/*float: left;*/	
+}
 .panel {
-	position: absolute;
-	display: inline-block;
-	float: left;
+	padding: 10px;
+	position: relative;
 }
 
 .hot {
@@ -18,8 +21,17 @@ body {
 	font-weight: bold;
 }
 
-supermap {
-	font-family: courier;
-	display: inline-block;
+.ad-point {
+	stroke: red;
+	stroke-width: 1px;
+}
+
+super-map {
+	/*position: absolute;*/
 	float: left;
+
+}
+
+.server-info {
+	position: absolute;
 }

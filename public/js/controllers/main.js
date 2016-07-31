@@ -4,13 +4,17 @@ angular.module('todoController', ['topo'])
 	.controller('mainController', ['$scope','$http','Radar', 'topo', function($scope, $http, Radar, topo) {
 		$scope.formData = {};
 		$scope.loading = true;
+		//$scope.options = { width: 4000 height: 5000 etc}
+		$scope.selection = {};
+		
+		$scope.hovered = function(d) {
+			$scope.selection = d;
+			$scope.$apply();
+		}
 
 		// GET =====================================================================
-		// when landing on the page, get all todos and show them
-		// use the service to get all the todos
 		Radar.get()
 			.success(function(data) {
-				// this is in the same place as hardcoded $scope.d3Data from other example.
 				$scope.todos = data;
 				$scope.loading = false;
 			});
@@ -19,7 +23,6 @@ angular.module('todoController', ['topo'])
 		// when submitting the add form, send the text to the node API
 		$scope.createTodo = function() {
 
-			// validate the formData to make sure that something is there
 			// if form is empty, nothing will happen
 			if ($scope.formData.text != undefined) {
 				$scope.loading = true;
