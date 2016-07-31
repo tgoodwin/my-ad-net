@@ -1,0 +1,25 @@
+body {
+	
+}
+
+.map-container {
+	border-left: 1px solid black;
+	margin-left: 20%;
+}
+
+.panel {
+	position: absolute;
+	display: inline-block;
+	float: left;
+}
+
+.hot {
+	color: red;
+	font-weight: bold;
+}
+
+supermap {
+	font-family: courier;
+	display: inline-block;
+	float: left;
+}

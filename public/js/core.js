@@ -1,6 +1,6 @@
 var app = angular.module('scotchTodo', [
 	'todoController',
-	'todoService'
+	'radarService'
 	]);
 
 app.directive('supermap', ['topo', function(topo) {
@@ -13,26 +13,28 @@ app.directive('supermap', ['topo', function(topo) {
 			coords: '=todos'
 		},
 		link: function(scope, element, attr) {
-			var width = angular.element(window)[0].innerWidth;
-			var height = angular.element(window)[0].innerHeight;
+			var inner_width = angular.element(window)[0].innerWidth;
+			var map_width = inner_width * 0.8;
+			var inner_height = angular.element(window)[0].innerHeight;
+			var map_height = inner_height - 20; // calibrated for default padding
 
 			var projection = d3.geo.albersUsa();
 			var path = d3.geo.path();
 
 			var updateProjection = function() {
-				projection.scale(width)
-					.translate([width / 2, height / 2]);
+				projection.scale(map_width * 1.25)
+					.translate([map_width / 2, map_height / 2]);
 				path.projection(projection);
 			};
 			updateProjection();
 			
-			var svg = d3.select(element[0])
+			var svg = d3.select('.map-container')
 				.append('svg');
 
 			// re-render d3 canvas on resize
 			window.onresize = function() {
-				width = angular.element(window)[0].innerWidth;
-				height = angular.element(window)[0].innerHeight;
+				map_width = angular.element(window)[0].innerWidth * 0.8;
+				map_height = angular.element(window)[0].innerHeight - 20;
 				updateProjection();
 				if (scope.coords)
 					scope.render(scope.coords);
@@ -41,7 +43,8 @@ app.directive('supermap', ['topo', function(topo) {
 
 			scope.$watch(function() {
 			}, function() {
-				return scope.render(scope.coords);
+				if (scope.coords)
+					return scope.render(scope.coords);
 			});
 
 			scope.$watch('coords', function(newVal, oldVal) {
@@ -52,8 +55,8 @@ app.directive('supermap', ['topo', function(topo) {
 			// d3 map drawing code here. -------
 			scope.render = function(data) {
 				svg
-					.attr('width', width)
-					.attr('height', height);
+					.attr('width', map_width)
+					.attr('height', map_height);
 
 				svg.selectAll('*').remove();
 				svg.insert('path', '.graticule')
@@ -83,6 +86,6 @@ app.directive('supermap', ['topo', function(topo) {
 					.attr('stroke-width', 1);
 			};
 		},
-		template: '<div></div>'
+		template: '<div class="panel"> ads located: {{ coords.length }}</div>'
 	}
 }]);

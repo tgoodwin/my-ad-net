@@ -1,8 +1,8 @@
-angular.module('todoService', [])
+angular.module('radarService', [])
 
 	// super simple service
 	// each function returns a promise object 
-	.factory('Todos', ['$http',function($http) {
+	.factory('Radar', ['$http',function($http) {
 		return {
 			get : function() {
 				return $http.get('/api/geo');

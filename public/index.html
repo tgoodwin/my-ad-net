@@ -7,6 +7,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
 
+    <link rel="stylesheet" type="text/css" href="styles/styles.css">
 	<title>my ad-network</title>
 
 	<!-- SPELLS -->
@@ -15,51 +16,15 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
 
 	<script src="js/controllers/main.js"></script>
-	<script src="js/services/todos.js"></script>
+	<script src="js/services/radar.js"></script>
     <script src="js/services/d3.js"></script>
 	<script src="js/core.js"></script>
 </head>
 
 <!-- SET THE CONTROLLER -->
 <body ng-controller="mainController">
-	<div class="container">
     <supermap map-data="topojson" todos="todos"></supermap>
-
-		<!-- HEADER AND TODO COUNT -->
-		<!-- <div>
-			<span class="label label-info">{{ todos.length }}</span>
-		</div> -->
-
-		<!-- TODO LIST -->
-		<!-- <div id="todo-list" class="row">
-			<div class="col-sm-4 col-sm-offset-4">
-				<div class="checkbox" ng-repeat="todo in todos">
-					<label>
-						<input type="checkbox" ng-click="deleteTodo(todo._id)"> {{ todo.ip }} {{ todo.city }} {{todo.latf}} {{todo.lonf}}
-					</label>
-				</div>
-
-				<p class="text-center" ng-show="loading">
-					<span class="fa fa-spinner fa-spin fa-3x"></span>
-				</p>
-
-			</div>
-		</div> -->
-
-		<!-- FORM TO CREATE TODOS -->
-		<!-- <div id="todo-form" class="row">
-			<div class="col-sm-8 col-sm-offset-2 text-center">
-				<form>
-					<div class="form-group">
-
-						<input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.text">
-					</div>
-
-					<button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>
-				</form>
-			</div>
-		</div> -->
-
+	<div class="map-container">
 
 	</div>
 
