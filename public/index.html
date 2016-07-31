@@ -11,7 +11,7 @@
 	<title>my ad-network</title>
 
 	<!-- SPELLS -->
-    <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="//d3js.org/topojson.v1.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
 
@@ -24,17 +24,12 @@
 <!-- SET THE CONTROLLER -->
 <body ng-controller="mainController">
     <super-map map-data="topojson" todos="todos" hovered="hovered(args)"></super-map>
-    <!-- <server-info selection="selection">ip {{selection.ip}}</server-info> -->
-        <div class="map-container"></div>
+
+    <server-info ng-if="hovering" selection="selection"></server-info>
         <div class="panel-container">
             <div class="panel">servers located: <span class="hot">{{ todos.length }}</span></div>
-            <div class="panel">{{ selection.domain }}</div>
-            <div class="panel">{{selection.ip}}</div>
-            <div class="panel">{{ selection.city}}</div>
-            <div class="panel">{{ selection.latf }} {{ selection.lonf}}</div>
         </div>
-
+        <div class="map-container"></div>
 	
-
 </body>
 </html>

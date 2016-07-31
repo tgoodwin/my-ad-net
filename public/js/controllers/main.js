@@ -9,6 +9,7 @@ angular.module('todoController', ['topo'])
 		
 		$scope.hovered = function(d) {
 			$scope.selection = d;
+			$scope.hovering = !!d;
 			$scope.$apply();
 		}
 

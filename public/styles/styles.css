@@ -1,19 +1,24 @@
 body {
-
+	background-color: #fefefe;
 }
 
 .map-container {
-	position: absolute;
+	position: relative;
 	margin-left: 20%;
+	float: left;
+	display: inline-block;
 }
 .panel-container {
 	width: auto;
+	position: relative;
 	font-family: courier;
-	/*float: left;*/	
+	float: left;
+	display: inline-block;
+	border-top: 1px solid black;
 }
 .panel {
 	padding: 10px;
-	position: relative;
+	/*position: absolute;*/
 }
 
 .hot {
@@ -24,14 +29,24 @@ body {
 .ad-point {
 	stroke: red;
 	stroke-width: 1px;
+	fill: none;
+}
+.ad-point:hover {
+	fill: red;
 }
 
 super-map {
-	/*position: absolute;*/
-	float: left;
 
 }
 
-.server-info {
+server-info {
 	position: absolute;
+	font-family: courier;
+	left: 10px;
+	bottom: 10px;
+}
+
+.container {
+	border-left: 10px solid black;
+	padding: 10px;
 }

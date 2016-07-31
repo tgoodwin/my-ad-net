@@ -19,8 +19,8 @@ app.directive('superMap', ['topo', function(topo) {
 			var inner_height = angular.element(window)[0].innerHeight;
 			var map_height = inner_height - 20; // calibrated for default padding
 
-			var projection = d3.geoAlbersUsa();
-			var path = d3.geoPath();
+			var projection = d3.geo.albersUsa();
+			var path = d3.geo.path();
 
 			var updateProjection = function() {
 				projection.scale(map_width * 1.25)
@@ -68,7 +68,7 @@ app.directive('superMap', ['topo', function(topo) {
 				svg.insert('path', '.graticule')
 					.datum(topojson.mesh(topo, topo.objects.states, function(a, b) { return a !== b }))
 					.attr('class', 'state-boundary')
-					.attr('stroke', "#fff")
+					.attr('stroke', "#fefefe")
 					.attr('d', path);
 
 				var project = function(d) {
@@ -86,12 +86,9 @@ app.directive('superMap', ['topo', function(topo) {
 					.attr('r', function(d) { return project(d) ? 4 : 0});
 
 				d3.selectAll('.ad-point').on('mouseover', function(d) {
-					console.log(d.ip);
 					scope.hovered({ args:d });
-					return d3.select(this).attr('fill', 'red');
 				}).on('mouseout', function(d) {
-					scope.hovered({ args: {} });
-					return d3.select(this).attr('fill', 'none');
+					scope.hovered({ args: false });
 				});
 			};
 		}
@@ -101,20 +98,12 @@ app.directive('superMap', ['topo', function(topo) {
 app.directive('serverInfo', function() {
 	return {
 		restrict: 'E',
-		replace: true,
-		scope: {
-			selection: '@selection'
-		},
-		link: function(scope, element, attr) {
-			// scope.watch('selection', function() {})
-			return true;
-		},
-		template: '<div>' +
-			'</br >domain: {{ selection.domain }}' + 
+		template: '<div class="container">' +
+			'domain: {{ selection.domain }}' + 
 			'</br >ip: {{ selection.ip }}' +
-			'</br >{{ selection.city }}' +
+			'</br >city: {{ selection.city }}' +
 			'</br >region: {{ selection.country }}' +
-			'</br >@ {{ selection.latf}} , {{ selection.lonf }}' +
+			'</br >location: {{ selection.latf}} , {{ selection.lonf }}' +
 			'</div>'
 	}
 });
