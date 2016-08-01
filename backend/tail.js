@@ -1,8 +1,7 @@
-//tail module -- raspberry pi OS helper code
 
 /* tail the logfile on the pi. for each tail event, hit a geolocation database and construct
  * an AdLoc model with the returned data.
- * Save this model to the database, that is all. nothing to be 'sent' from this module.
+ * Save this model to the database, that is all. no data to be served from this module.
  */
 
 var AdLoc = require('./models/adloc');      // load the AdLoc model.
@@ -17,17 +16,17 @@ console.log(!!mongoose.connection + ' that were connected');
 const logfile = '/home/pi/admap/outfile'
 var t = new Tail(logfile, '\n');
 
-var initCallbacks = function(model) { // pass in AdLoc mongoose object?
+var initCallbacks = function(model) {
     var AdLoc = model;
     // Tail the pi's DNS query logfile
     t.on('line', function(data) {
-
         // pluck out IP from logfile entry
     	var ad_domain = util.getIP(data);
     	util.geolocate(ad_domain, function(response) {
             try {
                 var res = JSON.parse(response);
-                console.log('parsed somethin good');
+                if (!res.city.length)
+                    res.city = 'N/A';
 
                 AdLoc.create({
                     domain : ad_domain,

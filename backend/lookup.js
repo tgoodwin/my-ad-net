@@ -10,7 +10,6 @@ var parse = function(data) {
 };
 
 var getServerLocation = function(address, callback) {
-	// could modularize this for various geolocation options
 	var msg = 'http://freegeoip.net/json/' + address;
 	console.log('api request: ', msg);
 	request(msg, function(error, response, body) {
