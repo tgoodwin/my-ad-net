@@ -1,12 +1,21 @@
 #!/bin/bash
 # init shell script
 
+# assume that we're running on a Raspbian distribution
+# with pi-hole successfully installed.
+DNS_LOG='/var/log/pihole.log'
+echo "initializing with logfile at $DNS_LOG"
+
 # delete previous outfile to more easily find errors
 rm -f outfile
 
-# pipe grep into growing file
-tail -f /var/log/pihole.log | fgrep --line-buffered gravity.list >> outfile &
+# pipe grep output into growing file
+if [ -d "$DNS_LOG" ]; then
+    tail -f "$DNS_LOG" | fgrep --line-buffered gravity.list >> outfile &
+fi
 
 # init node stuff
+npm install
 
 # node server.js or something
+node server.js
