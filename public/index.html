@@ -1,14 +1,13 @@
 <!doctype html>
 
-<!-- A TOPOGRAPHY OF ADVERTISEMENTS -->
-<html ng-app="scotchTodo">
+<html ng-app="myAdRadar">
 <head>
 	<!-- META -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
 
     <link rel="stylesheet" type="text/css" href="styles/styles.css">
-	<title>my ad-network</title>
+	<title>my ad net</title>
 
 	<!-- SPELLS -->
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -17,19 +16,20 @@
 
 	<script src="js/controllers/main.js"></script>
 	<script src="js/services/radar.js"></script>
-    <script src="js/services/d3.js"></script>
+    <script src="js/services/map.js"></script>
 	<script src="js/core.js"></script>
 </head>
 
-<!-- SET THE CONTROLLER -->
 <body ng-controller="mainController">
+    <div class="info-button" ng-click="toggleInfo()">[{{infoLabel}}]</div>
     <super-map map-data="topojson" todos="todos" hovered="hovered(args)"></super-map>
-
     <server-info ng-if="hovering" selection="selection"></server-info>
+
         <div class="panel-container">
             <div class="panel">servers located: <span class="hot">{{ todos.length }}</span></div>
         </div>
-        <div class="map-container"></div>
-	
+        <div class="map-container"></div><!-- container for SVG produced from topojson -->
+    
+    <div class="info-panel" ng-show="showInfo"><span class="title">my ad net</span> is a visualization of all the advertisement servers that have exchanged data with my apartment's local network at the time of this page's loading.</br></br>Some background:</br></br>Online ads come as the response after a browser makes a request to a server. On today's internet, ad servers are typically separate from the web server where a webpage is hosted.</br></br>The separation of content serving and ad serving follows after the business relationship between media industries and the separate advertisement industry. Content producers sell ad space to separate parties who handle that purchased space on dedicated ad platforms, often processesing user profile data to produce targeted ad experiences.</br></br>This separation has also been enabling relatively simple ad-blocker programs to efficiently strip ads out of a user's online experience. With ads being primarily served from separate, dedicated platforms, it's possible to observe patterns in web traffic and log web domains seen to consistently serve ads. Plain and simple domain name blacklists are the core functionality behind the highly effective ad-blockers that are destabilizing online, ad-based revenue models.</br></br>In the Internet's future, ads will likely be integrated into a webpage before it's served to a client, making it much more difficult for ad-blockers to discern ads from content as a webpage loads.</br></br>I made <i>my ad net</i> to illustrate a potentially unique period in the evolution of the Internet where users can exploit a weakly integrated ad network and manually filter out their increasingly personalized ads themselves.</br></br><span class="right">-tim</span></div>
 </body>
 </html>

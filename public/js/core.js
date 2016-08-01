@@ -1,5 +1,5 @@
-var app = angular.module('scotchTodo', [
-	'todoController',
+var app = angular.module('myAdRadar', [
+	'radarController',
 	'radarService'
 	]);
 
@@ -23,7 +23,7 @@ app.directive('superMap', ['topo', function(topo) {
 			var path = d3.geo.path();
 
 			var updateProjection = function() {
-				projection.scale(map_width * 1.25)
+				projection.scale(map_width)
 					.translate([map_width / 2, map_height / 2]);
 				path.projection(projection);
 			};
@@ -98,12 +98,19 @@ app.directive('superMap', ['topo', function(topo) {
 app.directive('serverInfo', function() {
 	return {
 		restrict: 'E',
-		template: '<div class="container">' +
+		template: '<div>' +
 			'domain: {{ selection.domain }}' + 
 			'</br >ip: {{ selection.ip }}' +
 			'</br >city: {{ selection.city }}' +
 			'</br >region: {{ selection.country }}' +
-			'</br >location: {{ selection.latf}} , {{ selection.lonf }}' +
+			'</br >location: [{{ selection.latf}}, {{ selection.lonf }}]' +
 			'</div>'
+	}
+});
+
+app.directive('infoPane', function() {
+	return {
+		restrict: 'E',
+		template: '<ng-include src="views/about.html""></ng-include>'
 	}
 });

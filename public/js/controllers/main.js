@@ -1,4 +1,4 @@
-angular.module('todoController', ['topo'])
+angular.module('radarController', ['topo'])
 
 	// inject the Todo service factory into our controller
 	.controller('mainController', ['$scope','$http','Radar', 'topo', function($scope, $http, Radar, topo) {
@@ -11,6 +11,13 @@ angular.module('todoController', ['topo'])
 			$scope.selection = d;
 			$scope.hovering = !!d;
 			$scope.$apply();
+		}
+
+		$scope.showInfo = false;
+		$scope.infoLabel = 'info';
+		$scope.toggleInfo = function() {
+			$scope.showInfo = $scope.showInfo ? false : true;
+			$scope.infoLabel = $scope.showInfo ? 'close' : 'info';
 		}
 
 		// GET =====================================================================

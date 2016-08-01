@@ -4,8 +4,7 @@ body {
 
 .map-container {
 	position: relative;
-	margin-left: 20%;
-	float: left;
+	float: right;
 	display: inline-block;
 }
 .panel-container {
@@ -18,7 +17,6 @@ body {
 }
 .panel {
 	padding: 10px;
-	/*position: absolute;*/
 }
 
 .hot {
@@ -35,18 +33,51 @@ body {
 	fill: red;
 }
 
-super-map {
+.info-button {
+	width: auto;
+	height: auto;
+	top: 10px;
+	right: 10px;
+	padding: 10px;
+	text-align: center;
+	vertical-align: middle;
+	position: fixed;
+	color: #222;
+	z-index: 15;
+	font-family: courier;
+}
+.info-button:hover {
+	color: red;
+	cursor: pointer;
+}
 
+.info-panel {
+	position: absolute;
+	font-family: courier;
+	font-size: 20px;
+	background-color: #fefefe;
+	opacity: 0.9;
+	padding: 15%;
+	z-index: 12;
+}
+.right {
+	text-align: right;
+}
+
+.title {
+	font-size: 150%;
+	font-style: italic;
+	font-weight: bold;
+	color: red;
 }
 
 server-info {
 	position: absolute;
 	font-family: courier;
+	border-left: 10px solid red;
 	left: 10px;
 	bottom: 10px;
-}
-
-.container {
-	border-left: 10px solid black;
 	padding: 10px;
+	z-index: 10;
+	line-height: 200%;
 }
