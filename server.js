@@ -7,9 +7,7 @@ var mongoose 	= 	require('mongoose'); 		// mehhhh
 var morgan 		= 	require('morgan');			// log requests to the console for now
 var bodyParser 	= 	require('body-parser');		// pull information from HTML POST
 var override 	=	require('method-override'); // simulate DELETE and PUT
-var utils 		= 	require('./app/utils');		// raspberry pi OS helper code
-
-// var mapjson		=	require('./public/us.json');
+var utils 		= 	require('./backend/utils');		// raspberry pi OS helper code
 
 var db = mongoose.connection;
 db.on('error', console.error);
@@ -28,9 +26,9 @@ var Todo = mongoose.model('Todo', {
 });
 
 // load the 'AdLoc' model constructor
-var AdLoc = require('./app/models/adloc');
+var AdLoc = require('./backend/models/adloc');
 // 
-var tailer = require('./app/tail');
+var tailer = require('./backend/tail');
 tailer.bind(AdLoc); // pass in our database-connected constructor.
 tailer.watch();
 
