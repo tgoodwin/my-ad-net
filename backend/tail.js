@@ -25,7 +25,7 @@ var initCallbacks = function(model) {
     	util.geolocate(ad_domain, function(response) {
             try {
                 var res = JSON.parse(response);
-                if (!res.city.length)
+                if (!!res.city == false)
                     res.city = 'N/A';
 
                 AdLoc.create({
