@@ -3,11 +3,11 @@
 // set up ==============================
 var express		=	require('express');
 var app 		=	express();
-var mongoose 	= 	require('mongoose'); 		// mehhhh
-var morgan 		= 	require('morgan');			// log requests to the console for now
-var bodyParser 	= 	require('body-parser');		// pull information from HTML POST
-var override 	=	require('method-override'); // simulate DELETE and PUT
-var utils 		= 	require('./backend/lookup');		// raspberry pi OS helper code
+var mongoose 	= 	require('mongoose'); 			// mehhhh
+var morgan 		= 	require('morgan');				// log requests to the console for now
+var bodyParser 	= 	require('body-parser');			// pull information from HTML POST
+var override 	=	require('method-override'); 	// simulate DELETE and PUT
+var utils 		= 	require('./backend/lookup');	// raspberry pi OS helper code
 
 var db = mongoose.connection;
 db.on('error', console.error);
@@ -20,7 +20,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(override());
 
-// load the 'AdLoc' model constructor
 var AdLoc = require('./backend/models/adloc');
 // 
 var tailer = require('./backend/tail');
@@ -43,7 +42,7 @@ app.get('/api/geo', function(req, res) {
 
 app.get('/api/geo/client', function(req, res) {
 	var client_ip = req.ip;
-	console.log('client: ', client_ip);
+	console.log('client connection: ', client_ip);
 	utils.geolocate(client_ip, function(response) {
 		var payload = JSON.parse(response);
 		res.json(payload);

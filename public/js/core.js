@@ -61,9 +61,6 @@ app.directive('superMap', ['topo', function(topo) {
 			}, true);
 
 			scope.render = function(data) {
-
-			
-				
 				svg
 					.attr('width', map_width)
 					.attr('height', map_height);
@@ -94,8 +91,7 @@ app.directive('superMap', ['topo', function(topo) {
 						return d.domain + '\n' + d.ip;
 					});
 
-				// var cell = voronoi(data);
-
+				// build voronoi tesselation
 				voronoi(data).forEach(function(cell) {
 					var path = d3.svg.line()
 						.x(function(d) { return d[0]; })
@@ -104,7 +100,6 @@ app.directive('superMap', ['topo', function(topo) {
 					var selection = svg.selectAll('.ad-point').filter(function() {
 						return d3.select(this).attr('unique-ip') == cell.point.ip.toString();
 					});
-					// build voronoi tesselation
 					svg.append('path')
 						.attr('d', path(cell))
 						.style('fill', 'none')
@@ -112,11 +107,12 @@ app.directive('superMap', ['topo', function(topo) {
 						.datum(selection);
 				});
 
+				// set voronoi mouseovers
 				d3.selectAll('path').on('mouseover', function(d) {
-					d3.select(d[0][0]).classed('hover', true);
+					d3.select(d.node()).classed('hover', true);
 					scope.hovered({ args:d.data()[0] });
 				}).on('mouseout', function(d) {
-					d3.select(d[0][0]).classed('hover', false);
+					d3.select(d.node()).classed('hover', false);
 					scope.hovered({ args: false });
 				});
 			};
@@ -131,7 +127,6 @@ app.directive('serverInfo', function() {
 			'domain: {{ selection.domain }}' + 
 			'</br >ip: {{ selection.ip }}' +
 			'</br >city: {{ selection.city }}' +
-			'</br >region: {{ selection.country }}' +
 			'</br >location: [{{ selection.latf}}, {{ selection.lonf }}]' +
 			'</div>'
 	}

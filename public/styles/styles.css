@@ -69,15 +69,18 @@ body {
 
 .title {
 	position: fixed;
+	width: 100%;
 	font-size: 200%;
 	font-family: 'Open Sans', sans-serif;
 	font-weight: 800;
+	text-align: center;
 	font-style: italic;
 }
 
 server-info {
 	position: absolute;
-	font-family: courier;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 130%;
 	border-left: 10px solid red;
 	left: 10px;
 	bottom: 10px;
