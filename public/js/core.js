@@ -9,18 +9,25 @@ app.directive('superMap', ['topo', function(topo) {
 		replace: false,
 		scope: {
 			id: '@',
-			coords: '=todos',
+			coords: '=coords',
 			hovered: '&hovered'
 		},
 
 		link: function(scope, element, attr) {
-			var inner_width = angular.element(window)[0].innerWidth;
-			var map_width = inner_width * 0.8;
-			var inner_height = angular.element(window)[0].innerHeight;
-			var map_height = inner_height - 20; // calibrated for default padding
+			var map_width = angular.element(window)[0].innerWidth;
+			var map_height = angular.element(window)[0].innerHeight;
 
 			var projection = d3.geo.albersUsa();
 			var path = d3.geo.path();
+
+			var project = function(d) {
+					return projection([+d.lonf, +d.latf]);
+				};
+
+			var voronoi = d3.geom.voronoi()
+				.x(function(d) { return project(d) ? project(d)[0] : null;})
+				.y(function(d) { return project(d) ? project(d)[1] : null;})
+				.clipExtent([[0,0], [map_width, map_height]]);
 
 			var updateProjection = function() {
 				projection.scale(map_width)
@@ -34,8 +41,8 @@ app.directive('superMap', ['topo', function(topo) {
 
 			// re-render d3 canvas on resize
 			window.onresize = function() {
-				map_width = angular.element(window)[0].innerWidth * 0.8;
-				map_height = angular.element(window)[0].innerHeight - 20;
+				map_width = angular.element(window)[0].innerWidth;
+				map_height = angular.element(window)[0].innerHeight;
 				updateProjection();
 				if (scope.coords)
 					scope.render(scope.coords);
@@ -54,7 +61,9 @@ app.directive('superMap', ['topo', function(topo) {
 			}, true);
 
 			scope.render = function(data) {
-				// var voronoi = d3.voronoi();
+
+			
+				
 				svg
 					.attr('width', map_width)
 					.attr('height', map_height);
@@ -64,30 +73,50 @@ app.directive('superMap', ['topo', function(topo) {
 					.datum(topojson.feature(topo, topo.objects.land))
 					.attr('d', path);
 
-				// state borders
 				svg.insert('path', '.graticule')
 					.datum(topojson.mesh(topo, topo.objects.states, function(a, b) { return a !== b }))
 					.attr('class', 'state-boundary')
 					.attr('stroke', "#fefefe")
 					.attr('d', path);
 
-				var project = function(d) {
-					return projection([+d.lonf, +d.latf]);
-				};
-
-				svg.selectAll('circle')
+				var servers = svg.selectAll('circle')
 					.data(data)
 					.enter()
 					.append('circle')
 					.classed('ad-point', true)
+					.attr('unique-ip', function(d) { return d.ip; })
 					.attr('cx', function (d) { return project(d) ? project(d)[0] : 0; })
 					.attr('cy', function (d) { return project(d) ? project(d)[1] : 0; })
-					.attr('city', function(d) { return d.city; })
 					.attr('r', function(d) { return project(d) ? 4 : 0});
 
-				d3.selectAll('.ad-point').on('mouseover', function(d) {
-					scope.hovered({ args:d });
+				servers.append('title')
+					.text(function(d) {
+						return d.domain + '\n' + d.ip;
+					});
+
+				// var cell = voronoi(data);
+
+				voronoi(data).forEach(function(cell) {
+					var path = d3.svg.line()
+						.x(function(d) { return d[0]; })
+						.y(function(d) { return d[1]; });
+
+					var selection = svg.selectAll('.ad-point').filter(function() {
+						return d3.select(this).attr('unique-ip') == cell.point.ip.toString();
+					});
+					// build voronoi tesselation
+					svg.append('path')
+						.attr('d', path(cell))
+						.style('fill', 'none')
+						.style('pointer-events', 'all')
+						.datum(selection);
+				});
+
+				d3.selectAll('path').on('mouseover', function(d) {
+					d3.select(d[0][0]).classed('hover', true);
+					scope.hovered({ args:d.data()[0] });
 				}).on('mouseout', function(d) {
+					d3.select(d[0][0]).classed('hover', false);
 					scope.hovered({ args: false });
 				});
 			};

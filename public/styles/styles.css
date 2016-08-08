@@ -1,11 +1,13 @@
+@import 'https://fonts.googleapis.com/css?family=Open+Sans:400,600i,800i|Roboto';
+
 body {
 	background-color: #fefefe;
 }
 
 .map-container {
-	position: relative;
-	float: right;
-	display: inline-block;
+	position: fixed;
+	fill: #acacac;
+	margin-right: 20px;
 }
 .panel-container {
 	width: auto;
@@ -21,54 +23,56 @@ body {
 
 .hot {
 	color: red;
-	font-weight: bold;
 }
 
 .ad-point {
-	stroke: red;
-	stroke-width: 1px;
 	fill: none;
-}
-.ad-point:hover {
-	fill: red;
+	stroke-width: 1px;
+	stroke: red;
 }
 
 .info-button {
 	width: auto;
 	height: auto;
-	top: 10px;
-	right: 10px;
-	padding: 10px;
+	top: 10px; right: 10px;
+	padding: 3px;
 	text-align: center;
-	vertical-align: middle;
 	position: fixed;
-	color: #222;
 	z-index: 15;
-	font-family: courier;
+	font-family: 'Open Sans', sans-serif;
+	color: #999;
+	border: 1px solid #999;
 }
 .info-button:hover {
-	color: red;
+	color: #222;
+	border: 1px solid #222;
 	cursor: pointer;
+}
+.hover {
+	fill: red;
 }
 
 .info-panel {
 	position: absolute;
-	font-family: courier;
+	font-family: 'Open Sans', sans-serif;
 	font-size: 20px;
 	background-color: #fefefe;
 	opacity: 0.9;
 	padding: 15%;
 	z-index: 12;
 }
-.right {
-	text-align: right;
+.info-panel-intro {
+	font-size: 150%;
+	font-weight: 600;
+	font-style: italic;
 }
 
 .title {
-	font-size: 150%;
+	position: fixed;
+	font-size: 200%;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 800;
 	font-style: italic;
-	font-weight: bold;
-	color: red;
 }
 
 server-info {
@@ -80,4 +84,5 @@ server-info {
 	padding: 10px;
 	z-index: 10;
 	line-height: 200%;
+	pointer-events: none;
 }

@@ -1,6 +1,5 @@
 angular.module('radarController', ['topo'])
 
-	// inject the Todo service factory into our controller
 	.controller('mainController', ['$scope','$http','Radar', 'topo', function($scope, $http, Radar, topo) {
 		$scope.formData = {};
 		$scope.loading = true;
@@ -23,40 +22,46 @@ angular.module('radarController', ['topo'])
 		// GET =====================================================================
 		Radar.get()
 			.success(function(data) {
-				$scope.todos = data;
+				$scope.coords = data;
 				$scope.loading = false;
+			});
+
+		Radar.find()
+			.success(function(data) {
+				$scope.client = data;
+				console.log($scope.client);
 			});
 
 		// CREATE ==================================================================
 		// when submitting the add form, send the text to the node API
-		$scope.createTodo = function() {
+		// $scope.createTodo = function() {
 
-			// if form is empty, nothing will happen
-			if ($scope.formData.text != undefined) {
-				$scope.loading = true;
+		// 	// if form is empty, nothing will happen
+		// 	if ($scope.formData.text != undefined) {
+		// 		$scope.loading = true;
 
-				// call the create function from our service (returns a promise object)
-				Radar.create($scope.formData)
+		// 		// call the create function from our service (returns a promise object)
+		// 		Radar.create($scope.formData)
 
-					// if successful creation, call our get function to get all the new todos
-					.success(function(data) {
-						$scope.loading = false;
-						$scope.formData = {}; // clear the form so our user is ready to enter another
-						$scope.todos = data; // assign our new list of todos
-					});
-			}
-		};
+		// 			// if successful creation, call our get function to get all the new todos
+		// 			.success(function(data) {
+		// 				$scope.loading = false;
+		// 				$scope.formData = {}; // clear the form so our user is ready to enter another
+		// 				$scope.todos = data; // assign our new list of todos
+		// 			});
+		// 	}
+		// };
 
 		// DELETE ==================================================================
 		// delete a todo after checking it
-		$scope.deleteTodo = function(id) {
-			$scope.loading = true;
+		// $scope.deleteTodo = function(id) {
+		// 	$scope.loading = true;
 
-			Radar.delete(id)
-				// if successful creation, call our get function to get all the new todos
-				.success(function(data) {
-					$scope.loading = false;
-					$scope.todos = data; // assign our new list of todos
-				});
-		};
+		// 	Radar.delete(id)
+		// 		// if successful creation, call our get function to get all the new todos
+		// 		.success(function(data) {
+		// 			$scope.loading = false;
+		// 			$scope.todos = data; // assign our new list of todos
+		// 		});
+		// };
 	}]);

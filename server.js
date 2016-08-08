@@ -7,7 +7,7 @@ var mongoose 	= 	require('mongoose'); 		// mehhhh
 var morgan 		= 	require('morgan');			// log requests to the console for now
 var bodyParser 	= 	require('body-parser');		// pull information from HTML POST
 var override 	=	require('method-override'); // simulate DELETE and PUT
-var utils 		= 	require('./backend/utils');		// raspberry pi OS helper code
+var utils 		= 	require('./backend/lookup');		// raspberry pi OS helper code
 
 var db = mongoose.connection;
 db.on('error', console.error);
@@ -20,11 +20,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(override());
 
-// example Todo model
-var Todo = mongoose.model('Todo', {
-	text: String
-});
-
 // load the 'AdLoc' model constructor
 var AdLoc = require('./backend/models/adloc');
 // 
@@ -36,15 +31,7 @@ var port = process.env.PORT || 8080;
 app.listen(port);
 console.log('listening on port' + port);
 
-// ---------- ROUTES ----------- // TODO: expose these in a routes.js module
-
-app.get('/api/todo', function(req, res) {
-	Todo.find(function (err, result) {
-		if (err)
-			res.send(err);
-		res.json(result); // return all results in json format.
-	});
-});
+// ---------- ROUTES ----------- //
 
 app.get('/api/geo', function(req, res) {
 	AdLoc.find(function (err, result) {
@@ -54,10 +41,14 @@ app.get('/api/geo', function(req, res) {
 	});
 });
 
-app.get('/us.json', function(req, res) {
-	res.setHeader('Content-Type', 'application/json');
-	res.json(mapjson);
-});
+app.get('/api/geo/client', function(req, res) {
+	var client_ip = req.ip;
+	console.log('client: ', client_ip);
+	utils.geolocate(client_ip, function(response) {
+		var payload = JSON.parse(response);
+		res.json(payload);
+	});
+})
 
 app.post('/api/todos', function(req, res) {
     // create a todo, information comes from AJAX request from Angular
@@ -94,9 +85,7 @@ app.delete('/api/todos/:todo_id', function(req, res) {
 	});
 });
 
-// application ---------------------------------------------------
 app.get('*', function(req, res) {
-	// load the single view file. Angular handles changes on front-end.
 	res.sendFile(__dirname + '/public/index.html');
 });
 

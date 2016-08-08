@@ -27,8 +27,8 @@ module.exports = {
 		return parse(data);
 	},
 
-	geolocate: function(d, callback) {
-		return getServerLocation(d, callback);
+	geolocate: function(address, callback) {
+		return getServerLocation(address, callback);
 	}
 };
 
