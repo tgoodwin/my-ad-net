@@ -1,4 +1,4 @@
-//server.js
+// author: tim goodwin, timg.goodwin@gmail.com
 
 // set up ==============================
 var express		=	require('express');
@@ -20,25 +20,52 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(override());
 
-var AdLoc = require('./backend/models/adloc');
-// 
+var AdRecord = require('./backend/models/adrecord');
+
 var tailer = require('./backend/tail');
-tailer.bind(AdLoc); // pass in our database-connected constructor.
+tailer.bind(AdRecord); // pass in my database-connected constructor.
 tailer.watch();
 
 var port = process.env.PORT || 8080;
 app.listen(port);
 console.log('listening on port' + port);
 
-// ---------- ROUTES ----------- //
+// GLOBALS
+var totalAds, uniqueLocations, totalServers;
+var globalCounter = {};
 
-app.get('/api/geo', function(req, res) {
-	AdLoc.find(function (err, result) {
+// download all data that raspberry pi has sent to the cloud
+var update = function() {
+	AdRecord.find(function(err, result) {
 		if (err)
-			res.send(err);
-		res.json(result);
+			console.log('AdRecord error: ', err);
+		totalAds = result.length;
+		uniqueLocations = getUnique(result, 'coordinate', globalCounter);
+		totalServers = getUnique(result, 'ip').length;
+	});
+}
+update();
+
+// ---------- ROUTES ----------- //
+app.get('/api/geo', function(req, res) {
+	res.json(uniqueLocations);
+});
+
+app.get('/api/stats', function(req, res) {
+	res.json({
+		'adsPerLocation': globalCounter,
+		'totalAds': totalAds,
+		'totalServers': totalServers,
+		'totalLocations':  uniqueLocations ? uniqueLocations.length : null
 	});
 });
+
+// AdLoc.distinct('ip').exec(function(err, result) {
+// 	totalServers = result.length;
+// });
+// AdLoc.distinct('coordinate').exec(function(err, result) {
+// 	totalLocations = result.length;
+// });
 
 app.get('/api/geo/client', function(req, res) {
 	var client_ip = req.ip;
@@ -47,44 +74,24 @@ app.get('/api/geo/client', function(req, res) {
 		var payload = JSON.parse(response);
 		res.json(payload);
 	});
-})
-
-app.post('/api/todos', function(req, res) {
-    // create a todo, information comes from AJAX request from Angular
-    Todo.create({
-        text : req.body.text,
-        done : false
-    }, function(err, todo) {
-        if (err)
-            res.send(err);
-
-        // get and return all the todos after you create another
-        Todo.find(function(err, todos) {
-            if (err)
-                res.send(err)
-            res.json(todos);
-        });
-    });
-});
-
-// delete a todo
-app.delete('/api/todos/:todo_id', function(req, res) {
-	Todo.remove({
-		_id : req.params.todo_id
-	}, function(err, todo) {
-		if (err)
-			res.send(err);
-
-		// get and return all the todos after you create another
-		Todo.find(function(err, todos) {
-			if (err)
-				res.send(err)
-			res.json(todos);
-		});
-	});
 });
 
 app.get('*', function(req, res) {
 	res.sendFile(__dirname + '/public/index.html');
 });
+
+// UTILS --------------
+
+var getUnique = function(array, key, unique = {}) {
+	var output = [];
+	array.forEach(function(object) {
+		if(!!unique[object[key]] == false) {
+			output.push(object);
+			unique[object[key]] = 1;
+		} else {
+			unique[object[key]] += 1;
+		}
+	});
+	return output;
+}
 
