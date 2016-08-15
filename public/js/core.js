@@ -9,8 +9,9 @@ app.directive('superMap', ['topo', function(topo) {
 		replace: false,
 		scope: {
 			id: '@',
-			coords: '=coords',
-			hovered: '&hovered'
+			coords: '=',
+			stats: '=',
+			hovered: '&'
 		},
 
 		link: function(scope, element, attr) {
@@ -21,12 +22,14 @@ app.directive('superMap', ['topo', function(topo) {
 			var path = d3.geo.path();
 
 			var project = function(d) {
-					return projection([+d.lonf, +d.latf]);
+					//coords stored as lat,long
+					var coords = d.coordinate.split(',');
+					return projection([+coords[1], +coords[0]]);
 				};
 
 			var voronoi = d3.geom.voronoi()
-				.x(function(d) { return project(d) ? project(d)[0] : null;})
-				.y(function(d) { return project(d) ? project(d)[1] : null;})
+				.x(function(d) { return project(d) ? project(d)[0] : null; })
+				.y(function(d) { return project(d) ? project(d)[1] : null; })
 				.clipExtent([[0,0], [map_width, map_height]]);
 
 			var updateProjection = function() {
@@ -41,8 +44,11 @@ app.directive('superMap', ['topo', function(topo) {
 
 			// re-render d3 canvas on resize
 			window.onresize = function() {
-				map_width = angular.element(window)[0].innerWidth;
-				map_height = angular.element(window)[0].innerHeight;
+				var width = angular.element(window)[0].innerWidth;
+				var height = angular.element(window)[0].innerHeight;
+				var aspectRatio = height / width;
+				map_width = width > height ? width : height;
+				map_height = map_width * aspectRatio;
 				updateProjection();
 				if (scope.coords)
 					scope.render(scope.coords);
@@ -84,12 +90,7 @@ app.directive('superMap', ['topo', function(topo) {
 					.attr('unique-ip', function(d) { return d.ip; })
 					.attr('cx', function (d) { return project(d) ? project(d)[0] : 0; })
 					.attr('cy', function (d) { return project(d) ? project(d)[1] : 0; })
-					.attr('r', function(d) { return project(d) ? 4 : 0});
-
-				servers.append('title')
-					.text(function(d) {
-						return d.domain + '\n' + d.ip;
-					});
+					.attr('r', function(d) { return project(d) ? 3 : 0});
 
 				// build voronoi tesselation
 				voronoi(data).forEach(function(cell) {
@@ -124,10 +125,11 @@ app.directive('serverInfo', function() {
 	return {
 		restrict: 'E',
 		template: '<div>' +
-			'domain: {{ selection.domain }}' + 
-			'</br >ip: {{ selection.ip }}' +
+			'most recent domain: {{ selection.domain }}' + 
+			'</br >most recent ip: {{ selection.ip }}' +
 			'</br >city: {{ selection.city }}' +
-			'</br >location: [{{ selection.latf}}, {{ selection.lonf }}]' +
+			'</br >location: [{{ selection.coordinate }}]' +
+			'</br >servers identified at location: {{stats.adsPerLocation[selection.coordinate]}}' +
 			'</div>'
 	}
 });
@@ -135,6 +137,10 @@ app.directive('serverInfo', function() {
 app.directive('infoPane', function() {
 	return {
 		restrict: 'E',
-		template: '<ng-include src="views/about.html""></ng-include>'
-	}
+		template: '<div>' +
+			'ads logged to date: <span class="hot">{{stats.totalAds}}</span> |' + 
+			' ad servers located: <span class="hot">{{stats.totalServers}}</span> |' +
+			' locations mapped: <span class="hot">{{stats.totalLocations}}</span>' +
+			'</div>'
+		}
 });

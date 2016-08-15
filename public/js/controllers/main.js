@@ -3,7 +3,6 @@ angular.module('radarController', ['topo'])
 	.controller('mainController', ['$scope','$http','Radar', 'topo', function($scope, $http, Radar, topo) {
 		$scope.formData = {};
 		$scope.loading = true;
-		//$scope.options = { width: 4000 height: 5000 etc}
 		$scope.selection = {};
 		
 		$scope.hovered = function(d) {
@@ -28,6 +27,10 @@ angular.module('radarController', ['topo'])
 		Radar.find()
 			.success(function(data) {
 				$scope.client = data;
-				console.log($scope.client);
 			});
+			
+		Radar.getStats()
+			.success(function(data) {
+				$scope.stats = data;
+			})
 	}]);

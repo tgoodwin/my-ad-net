@@ -1,7 +1,5 @@
 angular.module('radarService', [])
 
-	// super simple service
-	// each function returns a promise object 
 	.factory('Radar', ['$http',function($http) {
 		return {
 			get : function() {
@@ -9,7 +7,11 @@ angular.module('radarService', [])
 			},
 			find : function() {
 				return $http.get('/api/geo/client');
+			},
+			getStats : function() {
+				return $http.get('/api/stats');
 			}
+
 			// create : function(todoData) {
 			// 	return $http.post('/api/todos', todoData);
 			// },

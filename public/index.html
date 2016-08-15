@@ -24,14 +24,11 @@
 <body ng-controller="mainController">
     <div class="title">My Ad Network</div>
     <div class="info-button" ng-click="toggleInfo()">{{infoLabel}}</div>
-    <super-map map-data="topojson" coords="coords" hovered="hovered(args)"></super-map>
-    <server-info ng-if="hovering" selection="selection"></server-info>
-
-        <!-- <div class="panel-container">
-            <div class="panel">servers located: <span class="hot">{{ coords.length }}</span></div>
-        </div> -->
-        <div class="map-container"></div><!-- container for SVG produced from topojson -->
+    <super-map coords="coords" client="client" hovered="hovered(args)"></super-map>
+    <server-info ng-if="hovering"></server-info>
+    <div class="map-container"></div><!-- container for SVG produced from topojson -->
     
     <div class="info-panel" ng-show="showInfo"><span class="info-panel-intro"><span class="hot">my ad net</span> visualizes every server that has exchanged advertisement data with my apartment's local network.</span></br></br>Some background:</br></br>Online ads come as the response to a request initially made by a user's browser. On today's internet, ads are typically served from an endpoint other than the server that hosts the webpage being visited.</br></br>The separation of content serving and ad serving extends the traditional business relationship between media industries and the advertisement industry; two separate entities in collaboration. Website owners allocate ad space to be handled by separate parties on dedicated ad platforms. Typically, these dedicated platforms then processes a user's profile data to render targeted ad experiences in a webpage as it downloads into a user's browser.</br></br>Somewhat ironically, this separation has also enabled relatively simple ad-blocker programs to efficiently filter ads out of a user's online experience. When ads are served from separate, dedicated platforms, it's possible to observe patterns in web traffic and identify ad servers by logging web domains seen to consistently serve ad data. Plain and simple domain name blacklists are the core functionality within the highly effective ad-blockers that are threatening to destablize the internet's ad-based revenue models.</br></br>In the internet's future, ads will likely be integrated into a webpage before it's served to a client, making it much more difficult for a program to discern ads from content as a webpage loads.</br></br>I made <i>my ad net</i> to illustrate the circumstances of a potentially unique period in the evolution of the internet, one where ad-targeted internet users can exploit an advanced but distinguishable network of ad servers to evade their ads for free.</br></br>-tim</div>
+    <info-pane></info-pane>
 </body>
 </html>
