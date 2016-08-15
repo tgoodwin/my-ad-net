@@ -1,4 +1,4 @@
-@import 'https://fonts.googleapis.com/css?family=Open+Sans:400,600i,800i|Roboto';
+@import 'https://fonts.googleapis.com/css?family=Open+Sans|Roboto';
 
 body {
 	font-family: monospace;
@@ -61,7 +61,8 @@ body {
 	z-index: 12;
 }
 .info-panel-intro {
-	font-style: italic;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 150%;
 }
 
 .title {
@@ -70,7 +71,6 @@ body {
 	font-size: 200%;
 	padding-bottom: 10px;
 	font-family: 'Open Sans', sans-serif;
-	z-index: -4;
 }
 
 server-info {

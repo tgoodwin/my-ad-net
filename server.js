@@ -82,7 +82,9 @@ app.get('*', function(req, res) {
 
 // UTILS --------------
 
-var getUnique = function(array, key, unique = {}) {
+var getUnique = function(array, key, unique) {
+	if (!!unique == false)
+		unique = {};
 	var output = [];
 	array.forEach(function(object) {
 		if(!!unique[object[key]] == false) {
