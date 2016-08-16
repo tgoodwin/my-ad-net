@@ -135,7 +135,7 @@ app.directive('serverInfo', function() {
 			'most recent domain: {{ selection.domain }}' + 
 			'</br >most recent ip: {{ selection.ip }}' +
 			'</br >city: {{ selection.city }}' +
-			'</br >location: [{{ selection.coordinate }}]' +
+			'</br >location: {{ selection.coordinate }}' +
 			'</br >servers identified at location: {{stats.adsPerLocation[selection.coordinate]}}' +
 			'</div>'
 	}
