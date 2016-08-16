@@ -1,4 +1,4 @@
-var app = angular.module('myAdRadar', [
+var app = angular.module('myAdNet', [
 	'radarController',
 	'radarService'
 	]);
@@ -15,17 +15,28 @@ app.directive('superMap', ['topo', function(topo) {
 		},
 
 		link: function(scope, element, attr) {
-			var map_width = angular.element(window)[0].innerWidth;
-			var map_height = angular.element(window)[0].innerHeight;
-
+			var map_width, map_height;
 			var projection = d3.geo.albersUsa();
 			var path = d3.geo.path();
 
 			var project = function(d) {
-					//coords stored as lat,long
-					var coords = d.coordinate.split(',');
-					return projection([+coords[1], +coords[0]]);
-				};
+				//coords stored as lat,long
+				var coords = d.coordinate.split(',');
+				return projection([+coords[1], +coords[0]]);
+			};
+
+			var size = function() {
+				var rect = d3.select('.map-container').node().getBoundingClientRect();
+				if (rect.width > 1150) {
+					var aspect_ratio = rect.height / rect.width;
+					map_width = 1150;
+					map_height = 1150 * aspect_ratio;
+				} else {
+					map_width = rect.width;
+					map_height = rect.height;
+				}
+			}
+			size();
 
 			var voronoi = d3.geom.voronoi()
 				.x(function(d) { return project(d) ? project(d)[0] : null; })
@@ -44,11 +55,7 @@ app.directive('superMap', ['topo', function(topo) {
 
 			// re-render d3 canvas on resize
 			window.onresize = function() {
-				var width = angular.element(window)[0].innerWidth;
-				var height = angular.element(window)[0].innerHeight;
-				var aspectRatio = height / width;
-				map_width = width > height ? width : height;
-				map_height = map_width * aspectRatio;
+				size();
 				updateProjection();
 				if (scope.coords)
 					scope.render(scope.coords);
