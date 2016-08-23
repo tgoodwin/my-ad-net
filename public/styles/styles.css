@@ -21,17 +21,17 @@ body {
 }
 
 .hot {
-	color: red;
+	color: #e50000;
 }
 .cute {
-	color: red;
+	color: #e50000;
 	font-style: italic;
 }
 
 .ad-point {
 	fill: none;
 	stroke-width: 1px;
-	stroke: red;
+	stroke: #e50000;
 	z-index: 25;
 }
 
@@ -53,7 +53,7 @@ body {
 	cursor: pointer;
 }
 .hover {
-	fill: red;
+	fill: #e50000;
 }
 
 .info-panel {
@@ -70,9 +70,11 @@ body {
 .info-panel a {
 	text-decoration: none;
 }
-.info-panel-intro {
-	font-family: 'Open Sans', sans-serif;
-	font-size: 150%;
+.intro {
+	font-size: 160%;
+}
+.sub {
+	font-size: 120%;
 }
 
 .title {
