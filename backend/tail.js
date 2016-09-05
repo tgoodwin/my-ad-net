@@ -9,7 +9,6 @@ var Tail = require('always-tail');          // like the UNIX tail command
 var util = require('./lookup');              // freegeoip API helper module
 
 var mongoose = require('mongoose');
-// mongoose.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map');
 console.log(!!mongoose.connection + ' that were connected');
 
 // outfile is the pi-hole's logfile grepped for ad-blocked DNS queries
@@ -17,7 +16,7 @@ const logfile = '/home/pi/admap/outfile'
 var t = new Tail(logfile, '\n');
 
 var initCallbacks = function(model) {
-    var AdLoc = model;
+    var AdRecord = model;
     // Tail the pi's DNS query logfile
     t.on('line', function(data) {
         // pluck out IP from logfile entry
@@ -28,13 +27,12 @@ var initCallbacks = function(model) {
                 if (!!res.city == false)
                     res.city = 'N/A';
 
-                AdLoc.create({
+                AdRecord.create({
                     domain : ad_domain,
                     ip : res['ip'],
                     city : res['city'],
                     country : res['country_name'],
-                    latf : res['latitude'],
-                    lonf : res['longitude']
+                    coordinate : res['latitude'] + ',' + res['longitude']
                 }, function(err, adloc) {
                     if (err)
                         console.log('geolocate->database eror: ', err);

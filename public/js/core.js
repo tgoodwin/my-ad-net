@@ -21,7 +21,7 @@ app.directive('superMap', ['topo', function(topo) {
 
 			var project = function(d) {
 				//coords stored as lat,long
-				if(!!d == true) {
+				if(!!d.coordinate == true) {
 					var coords = d.coordinate.split(',');
 					return projection([+coords[1], +coords[0]]);
 				}
