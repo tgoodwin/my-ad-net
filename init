@@ -10,9 +10,7 @@ echo "initializing with logfile at $DNS_LOG"
 rm -f outfile
 
 # pipe grep output into growing file
-if [ -d "$DNS_LOG" ]; then
-    tail -f "$DNS_LOG" | fgrep --line-buffered gravity.list >> outfile &
-fi
+tail -f $DNS_LOG | fgrep --line-buffered gravity.list >> outfile &
 
 # init node stuff
 npm install
