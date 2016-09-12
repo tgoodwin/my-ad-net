@@ -12,7 +12,8 @@ var mongoose = require('mongoose');
 console.log(!!mongoose.connection + ' that were connected');
 
 // outfile is the pi-hole's logfile grepped for ad-blocked DNS queries
-const logfile = '/home/pi/admap/outfile'
+// this is a brittle solution, but assumes that the 'init' script has just been run.
+const logfile = '/home/pi/my-ad-net/outfile'
 var t = new Tail(logfile, '\n');
 
 var initCallbacks = function(model) {
