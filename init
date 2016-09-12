@@ -10,9 +10,10 @@ echo "initializing with logfile at $DNS_LOG"
 rm -f outfile
 
 # pipe grep output into growing file
-tail -f $DNS_LOG | fgrep --line-buffered gravity.list >> outfile &
+tail -f /var/log/pihole.log | fgrep --line-buffered gravity.list >> outfile &
 
 # init node stuff
+echo "installing dependencies"
 npm install
 
 # node server.js or something
