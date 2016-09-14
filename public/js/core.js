@@ -134,11 +134,12 @@ app.directive('serverInfo', function() {
 	return {
 		restrict: 'E',
 		template: '<div>' +
-			'most recent domain: {{ selection.domain }}' + 
-			'</br >most recent ip: {{ selection.ip }}' +
-			'</br >city: {{ selection.city }}' +
-			'</br >location: [{{ selection.coordinate }}]' +
-			'</br >servers identified at location: {{stats.adsPerLocation[selection.coordinate]}}' +
+			'<b><i> Datacenter Info:</i></b>' + 
+			'</br >city: <span class="hot">{{ selection.city }}</span>' +
+			'</br >location:<span class="hot"> {{ selection.coordinate }}</span>' +
+			'</br >most recent domain: <span class="hot">{{ selection.domain }}</span>' + 
+			'</br >most recent ip: <span class="hot">{{ selection.ip }}</span>' +
+			'</br >servers identified at location: <span class="hot">{{stats.adsPerLocation[selection.coordinate]}}</span>' +
 			'</div>'
 	}
 });
