@@ -12,7 +12,7 @@ angular.module('radarController', ['topo'])
 		}
 
 		$scope.showInfo = false;
-		$scope.infoLabel = 'info';
+		$scope.infoLabel = 'what is this?';
 		$scope.toggleInfo = function() {
 			$scope.showInfo = $scope.showInfo ? false : true;
 			$scope.infoLabel = $scope.showInfo ? 'close' : 'info';

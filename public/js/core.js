@@ -80,34 +80,38 @@ app.directive('superMap', ['topo', function(topo) {
 					.attr('width', map_width)
 					.attr('height', map_height);
 
-				svg.selectAll('*').remove();
+				//draw the continent
 				svg.insert('path', '.graticule')
 					.datum(topojson.feature(topo, topo.objects.land))
 					.attr('d', path);
 
+				// draw the state boundaries
 				svg.insert('path', '.graticule')
 					.datum(topojson.mesh(topo, topo.objects.states, function(a, b) { return a !== b }))
 					.attr('class', 'state-boundary')
 					.attr('stroke', "#fefefe")
 					.attr('d', path);
 
-				var servers = svg.selectAll('circle')
+				// mark the server locations on the map
+				svg.selectAll('circle')
 					.data(data)
 					.enter()
 					.append('circle')
-					.classed('ad-point', true)
+					.attr('stroke', 'white')
+					.attr('stroke-width', 1)
+					.attr('fill', '#e50000')
 					.attr('unique-ip', function(d) { return d.ip; })
 					.attr('cx', function (d) { return project(d) ? project(d)[0] : 0; })
 					.attr('cy', function (d) { return project(d) ? project(d)[1] : 0; })
-					.attr('r', function(d) { return project(d) ? 3 : 0});
+					.attr('r', function(d) { return 3; });
 
-				// build voronoi tesselation
+				// build voronoi tesselation for hover overs
 				voronoi(data).forEach(function(cell) {
 					var path = d3.svg.line()
 						.x(function(d) { return d[0]; })
 						.y(function(d) { return d[1]; });
 
-					var selection = svg.selectAll('.ad-point').filter(function() {
+					var selection = svg.selectAll('circle').filter(function() {
 						return d3.select(this).attr('unique-ip') == cell.point.ip.toString();
 					});
 					svg.append('path')
@@ -118,10 +122,12 @@ app.directive('superMap', ['topo', function(topo) {
 				});
 
 				// set voronoi mouseovers
-				d3.selectAll('path').on('mouseover', function(d) {
+				d3.selectAll('path')
+				.on('mouseover', function(d) {
 					d3.select(d.node()).classed('hover', true);
 					scope.hovered({ args:d.data()[0] });
-				}).on('mouseout', function(d) {
+				})
+				.on('mouseout', function(d) {
 					d3.select(d.node()).classed('hover', false);
 					scope.hovered({ args: false });
 				});
@@ -134,10 +140,9 @@ app.directive('serverInfo', function() {
 	return {
 		restrict: 'E',
 		template: '<div>' +
-			'<b><i> Datacenter Info:</i></b>' + 
-			'</br >city: <span class="hot">{{ selection.city }}</span>' +
-			'</br >location:<span class="hot"> {{ selection.coordinate }}</span>' +
-			'</br >most recent domain: <span class="hot">{{ selection.domain }}</span>' + 
+			'city: {{ selection.city }}' +
+			'</br >location: {{ selection.coordinate }}' +
+			'</br >most recent hostname: <span class="hot">{{ selection.domain }}</span>' + 
 			'</br >most recent ip: <span class="hot">{{ selection.ip }}</span>' +
 			'</br >servers identified at location: <span class="hot">{{stats.adsPerLocation[selection.coordinate]}}</span>' +
 			'</div>'
@@ -150,7 +155,7 @@ app.directive('infoPane', function() {
 		template: '<div>' +
 			'ads logged to date: <span class="hot">{{stats.totalAds}}</span> |' + 
 			' ad servers located: <span class="hot">{{stats.totalServers}}</span> |' +
-			' locations mapped: <span class="hot">{{stats.totalLocations}}</span>' +
+			' unique locations: <span class="hot">{{stats.totalLocations}}</span>' +
 			'</div>'
 		}
 });
