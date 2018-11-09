@@ -11,12 +11,5 @@ angular.module('radarService', [])
 			getStats : function() {
 				return $http.get('/api/stats');
 			}
-
-			// create : function(todoData) {
-			// 	return $http.post('/api/todos', todoData);
-			// },
-			// delete : function(id) {
-			// 	return $http.delete('/api/todos/' + id);
-			// }
 		}
 	}]);

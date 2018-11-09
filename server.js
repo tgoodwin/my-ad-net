@@ -1,18 +1,17 @@
 // author: tim goodwin, timg.goodwin@gmail.com
 
-// set up ==============================
 var express		=	require('express');
-var app 		=	express();
 var mongoose 	= 	require('mongoose'); 			// mehhhh
 var morgan 		= 	require('morgan');				// log requests to the console for now
 var bodyParser 	= 	require('body-parser');			// pull information from HTML POST
 var override 	=	require('method-override'); 	// simulate DELETE and PUT
-var utils 		= 	require('./backend/lookup');	// raspberry pi OS helper code
+var utils 		= 	require('./backend/lookup');	// raspberry pi helper code
 
 var db = mongoose.connection;
 db.on('error', console.error);
 mongoose.connect('mongodb://tgoodwin:ad-map2016@ds011840.mlab.com:11840/ad-map');
 
+var app = express();
 app.use(express.static(__dirname + '/public'));
 //app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -23,7 +22,7 @@ app.use(override());
 var AdRecord = require('./backend/models/adrecord');
 
 var tailer = require('./backend/tail');
-tailer.bind(AdRecord); // pass in my database-connected constructor.
+tailer.bind(AdRecord);
 tailer.watch();
 
 var port = process.env.PORT || 8080;
@@ -60,13 +59,6 @@ app.get('/api/stats', function(req, res) {
 	});
 });
 
-// AdLoc.distinct('ip').exec(function(err, result) {
-// 	totalServers = result.length;
-// });
-// AdLoc.distinct('coordinate').exec(function(err, result) {
-// 	totalLocations = result.length;
-// });
-
 app.get('/api/geo/client', function(req, res) {
 	var client_ip = req.ip;
 	console.log('client connection: ', client_ip);
@@ -80,7 +72,7 @@ app.get('*', function(req, res) {
 	res.sendFile(__dirname + '/public/index.html');
 });
 
-// UTILS --------------
+// some helpers --------------
 
 var getUnique = function(array, key, unique) {
 	if (!!unique == false)
